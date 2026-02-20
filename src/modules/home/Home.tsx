@@ -3,7 +3,7 @@ import { TbBuildingCommunity } from "react-icons/tb";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { TbBrandReact } from "react-icons/tb";
 
-import { AccesButton } from "../../app/components/AccesButton";
+import { AccessButton } from "../../app/components/AccessButton";
 import { useAuthStore } from "../../app/store/useStore";
 
 const iconSize = 50;
@@ -41,7 +41,7 @@ const Home = () => {
     <div className="w-full h-full p-4 flex bg-linear-to-br from-primary/10">
       <div className="grid flex-1 sm:grid-cols-2 grid-cols-1 auto-rows-fr gap-2 sm:gap-4 mt-4 sm:ml-4 ml-2">
         {botones.map((item: any, index: number) => (
-          <AccesButton
+          <AccessButton
             key={index}
             data={{
               title: item.title,

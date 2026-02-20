@@ -44,7 +44,7 @@ const ButtonSideBar = ({
         setOpenSideBar(false);
         navigate(route);
       }}
-      className={`flex items-center gap-2 rounded-xl ${
+      className={`flex items-center gap-2 rounded-xl  ${
         title === location(pathname)
           ? "bg-primary text-white"
           : "bg-white text-primary"

@@ -1,4 +1,4 @@
-import { AccesButton } from "../../../app/components/AccesButton";
+import { AccessButton } from "../../../app/components/AccessButton";
 import { Container } from "../../../ui/components";
 
 import { TbCalendarCog } from "react-icons/tb";
@@ -86,7 +86,7 @@ const CopAdmin = () => {
     <Container>
       <div className="grid flex-1 sm:grid-cols-3 grid-cols-2 auto-rows-fr gap-2 sm:gap-4 mt-4 sm:ml-4 ml-2">
         {botones.map((item: any, index: number) => (
-          <AccesButton
+          <AccessButton
             key={index}
             data={{
               title: item.title,

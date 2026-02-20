@@ -55,7 +55,7 @@ const SideBar = () => {
     >
       <button
         onClick={() => setOpenSideBar((prev) => !prev)}
-        className="flex items-center justify-center w-full gap-2 px-2 py-2 bg-white rounded-xl text-primary hover:bg-slate-50 shadow-md"
+        className="flex items-center justify-center w-full gap-2 px-2 py-2 bg-white rounded-xl text-primary cursor-pointer hover:bg-primary-opacity shadow-md"
       >
         {openSideBar ? (
           <RiExpandLeftLine size={20} />
