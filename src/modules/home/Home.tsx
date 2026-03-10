@@ -22,19 +22,19 @@ const Home = () => {
       title: "COP3eros",
       icon: <TbBuildingCommunity size={iconSize} />,
       route: "/COP3eros",
-      access: true,
+      access: false,
     },
     {
       title: "TableroML",
       icon: <LuLayoutDashboard size={iconSize} />,
       route: "/TableroML",
-      access: true,
+      access: false,
     },
     {
       title: "FootXSystem",
       icon: <TbBrandReact size={iconSize} />,
       route: "/FootXSystem",
-      access: true,
+      access: false,
     },
   ];
   return (

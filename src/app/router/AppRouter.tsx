@@ -11,6 +11,7 @@ import {
   Cop3eros,
   CopAdmin,
   AdminTurnos,
+  ReportesTurnos,
 } from "../../modules/dashboard";
 
 const AppRouter = () => {
@@ -24,6 +25,7 @@ const AppRouter = () => {
 
           <Route path="/FootXSystem" element={<FootXSystem />} />
           <Route path="/AdminTurnos" element={<AdminTurnos />} />
+          <Route path="/ReportesTurnos" element={<ReportesTurnos />} />
           <Route path="/TableroML" element={<TableroMl />} />
           <Route path="/COPAdmin" element={<CopAdmin />} />
           <Route path="/COP3eros" element={<Cop3eros />} />

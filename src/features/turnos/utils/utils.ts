@@ -1,8 +1,3 @@
-const copiar = (sede: string, fecha: string, hora: string) => {
-  const texto = `Sede: ${sede}\nFecha: ${fecha}\nHora: ${hora}`;
-  navigator.clipboard.writeText(texto);
-};
-
 const hasEncodingArtifacts = (text: string): boolean => {
   return (
     text.includes("�") ||
@@ -50,13 +45,6 @@ const normalizeText = (input: any): string => {
   return "";
 };
 
-const getEstadoAtencionLabel = (id: number, estadosAtencion: any) => {
-  const estado = estadosAtencion.find(
-    (estado: any) => estado.idtestados_atenciones === id,
-  );
-  return estado ? estado.estatt_descripcion : "Desconocido";
-};
-
 const formatDate = (date?: string) => {
   if (!date) return "-";
 
@@ -65,4 +53,21 @@ const formatDate = (date?: string) => {
   return y && m && d ? `${d}/${m}/${y}` : "-";
 };
 
-export { copiar, normalizeText, getEstadoAtencionLabel, formatDate };
+const HEX_COLORS = {
+  ABEO: "#898CFF",
+  AP: "#FEFE00",
+  CONTROL: "#FB6461",
+  DD: "#000080",
+  EFAL: "#FF4000",
+  ENT_PEDILEN: "#FDA52A",
+  ENTREGA: "#DC143B",
+  ENTREGA_ORTESIS: "#807F80",
+  FL: "#0A4900",
+  ORTESIS: "#C08000",
+  PROTESIS: "#4030A0",
+  REPITE: "#1699DB",
+  TECNICO_ASIGNADO: "#88048E",
+  TERMOPLASTICOS: "#00DEF0",
+  SIN_ASIGNAR: "#000000ff",
+};
+export { normalizeText, formatDate, HEX_COLORS };

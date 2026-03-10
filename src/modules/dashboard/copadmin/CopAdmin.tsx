@@ -2,6 +2,7 @@ import { AccessButton } from "../../../app/components/AccessButton";
 import { Container } from "../../../ui/components";
 
 import { TbCalendarCog } from "react-icons/tb";
+import { LuCalendarArrowDown } from "react-icons/lu";
 import { MdMessage } from "react-icons/md";
 import {
   FaClipboardList,
@@ -13,9 +14,11 @@ import {
   FaIdCard,
   FaGift,
 } from "react-icons/fa";
+
 import { useAuthStore } from "../../../app/store/useStore";
 
 const iconSize = 40;
+
 const CopAdmin = () => {
   const { user } = useAuthStore();
 
@@ -78,6 +81,12 @@ const CopAdmin = () => {
       title: "Admin Turnos",
       route: "/AdminTurnos",
       icon: <TbCalendarCog size={iconSize} />,
+      access: user?.usu_app_footx_administrador === 1,
+    },
+    {
+      title: "Reporte de Turnos",
+      route: "/ReportesTurnos",
+      icon: <LuCalendarArrowDown size={iconSize} />,
       access: user?.usu_app_footx_administrador === 1,
     },
   ];
