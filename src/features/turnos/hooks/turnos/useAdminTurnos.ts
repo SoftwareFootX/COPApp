@@ -155,6 +155,11 @@ const useAdminTurnos = () => {
   const agregarFeriadoTurno = async () => {
     if (!user?.idtusuarios) return;
 
+    if (!formFeriados.feriado_fecha) {
+      alert("La fecha es obligatoria");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -179,6 +184,10 @@ const useAdminTurnos = () => {
     try {
       setLoading(true);
 
+      if (!formFeriados.feriado_fecha) {
+        alert("La fecha es obligatoria");
+        return;
+      }
       await actualizarFeriado(formFeriados);
 
       window.location.reload();
@@ -200,6 +209,7 @@ const useAdminTurnos = () => {
       };
 
       await eliminarFeriado(bodyFinal);
+
       window.location.reload();
     } catch (error) {
       console.error("Error al eliminar feriado", error);
