@@ -22,24 +22,40 @@ const Home = () => {
       title: "COP3eros",
       icon: <TbBuildingCommunity size={iconSize} />,
       route: "/COP3eros",
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "TableroML",
       icon: <LuLayoutDashboard size={iconSize} />,
       route: "/TableroML",
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "FootXSystem",
       icon: <TbBrandReact size={iconSize} />,
       route: "/FootXSystem",
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
   ];
   return (
     <div className="w-full h-full p-4 flex bg-linear-to-br from-primary/10">
-      <div className="grid flex-1 sm:grid-cols-2 grid-cols-1 auto-rows-fr gap-2 sm:gap-4 mt-4 sm:ml-4 ml-2">
+      <div
+        className="
+          grid flex-1
+          grid-cols-2
+          sm:grid-cols-3
+          md:grid-cols-4
+          lg:grid-cols-5
+          xl:grid-cols-6
+          auto-rows-fr
+          gap-2
+          sm:gap-3
+          md:gap-4
+          mt-4
+          ml-2
+          sm:ml-4
+          "
+      >
         {botones.map((item: any, index: number) => (
           <AccessButton
             key={index}

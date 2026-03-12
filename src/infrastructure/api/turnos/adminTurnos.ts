@@ -28,7 +28,7 @@ const getBloqueos = async (params: { limit: number; offset: number }) => {
 
 const agregarBloqueo = async (body: propsFormBloqueos) => {
   try {
-    const response = await axiosInstance.post<propsFormBloqueos[]>(
+    const response = await axiosInstance.post(
       "/admin_turnos/agregar_bloqueo",
       body,
     );
@@ -42,7 +42,7 @@ const agregarBloqueo = async (body: propsFormBloqueos) => {
 
 const actualizarBloqueo = async (body: propsFormBloqueos) => {
   try {
-    const response = await axiosInstance.patch<propsFormBloqueos[]>(
+    const response = await axiosInstance.patch(
       "/admin_turnos/actualizar_bloqueo",
       body,
     );
@@ -83,7 +83,7 @@ const getFeriados = async (params: { limit: number; offset: number }) => {
 
 const agregarFeriado = async (body: propsFormFeriados) => {
   try {
-    const response = await axiosInstance.post<propsFormFeriados[]>(
+    const response = await axiosInstance.post(
       "/admin_turnos/agregar_feriado",
       body,
     );
@@ -97,7 +97,7 @@ const agregarFeriado = async (body: propsFormFeriados) => {
 
 const actualizarFeriado = async (body: propsFormFeriados) => {
   try {
-    const response = await axiosInstance.patch<propsFormFeriados[]>(
+    const response = await axiosInstance.patch(
       "/admin_turnos/actualizar_feriado",
       body,
     );
@@ -113,7 +113,24 @@ const eliminarFeriado = async (body: any) => {
   try {
     const response = await axiosInstance.patch(
       "/admin_turnos/ocultar_feriado",
-      { data: body },
+      body,
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Error al eliminar feriado", error);
+    throw error;
+  }
+};
+
+const bloquearEspacio = async (body: {
+  fk_turnos_bloq: number;
+  fk_espacios_de_trabajo: number;
+}) => {
+  try {
+    const response = await axiosInstance.post(
+      "/admin_turnos/bloquear_espacio_de_trabajo",
+      body,
     );
 
     return response;
@@ -132,4 +149,5 @@ export {
   agregarFeriado,
   actualizarFeriado,
   eliminarFeriado,
+  bloquearEspacio,
 };

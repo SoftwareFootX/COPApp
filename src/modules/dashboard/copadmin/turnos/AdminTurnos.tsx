@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
+
 import { Container } from "../../../../ui/components";
+import { useNavigate } from "react-router-dom";
+import { GoArrowLeft } from "react-icons/go";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { format } from "date-fns";
+
+import { useAdminTurnos } from "../../../../features/turnos/hooks/turnos/useAdminTurnos";
+import type { propsFormFeriados } from "../../../../core/entitites/propsFeriados.types";
+import type { propsFormBloqueos } from "../../../../core/entitites/propsBloqueos.types";
 import { useData } from "../../../../features/turnos/hooks/useData";
+import { Spinner } from "../../../../app/components/Spinner";
 import type {
   propsEspaciosPorConsultorio,
   propsSedesPorConsultorio,
 } from "../../../../core/entitites/propsConsultorio.types";
-import { Spinner } from "../../../../app/components/Spinner";
 import { Historial } from "./components/Historial";
-
-type Modo = "feriado" | "bloqueo";
 
 const AdminTurnos = () => {
   const {
@@ -24,7 +29,26 @@ const AdminTurnos = () => {
     loading,
   } = useData();
 
-  const [modo, setModo] = useState<Modo>("bloqueo");
+  const {
+    bloquearEspaciosDeTrabajo,
+    agregarFeriadoTurno,
+    setFormBloqueos,
+    setFormFeriados,
+
+    formBloqueos,
+    formFeriados,
+    loading: loadingData,
+  } = useAdminTurnos();
+  const navigate = useNavigate();
+
+  const [modo, setModo] = useState(() => {
+    return sessionStorage.getItem("modo") || "bloqueo";
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem("modo", modo);
+  }, [modo]);
+
   const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | undefined>(
     new Date(),
   );
@@ -32,10 +56,6 @@ const AdminTurnos = () => {
   const [consultoriosSeleccionados, setConsultoriosSeleccionados] = useState<
     number[]
   >([]);
-  const [tipoDeBloqueo, setTipoDeBloqueo] = useState<string>("T1");
-  const [sede, setSede] = useState<number>(7);
-  const [motivo, setMotivo] = useState<string>("");
-  const [descripcionFeriado, setDescripcionFeriado] = useState("");
 
   const toggleConsultorio = (id: number | "ALL") => {
     if (id === "ALL") {
@@ -53,7 +73,9 @@ const AdminTurnos = () => {
   };
 
   const handleAgregar = () => {
-    if (!fechaSeleccionada) return;
+    modo === "bloqueo"
+      ? bloquearEspaciosDeTrabajo(consultoriosSeleccionados)
+      : agregarFeriadoTurno();
   };
 
   useEffect(() => {
@@ -61,20 +83,28 @@ const AdminTurnos = () => {
   }, []);
 
   useEffect(() => {
-    espaciosPorSede(sede);
-  }, [sede]);
+    espaciosPorSede(formBloqueos.fk_sede);
+  }, [formBloqueos.fk_sede]);
 
   return (
     <Container>
       <div className="p-2 sm:p-3 bg-background-light text-slate-900 flex flex-col h-auto w-full">
         <main className="mx-auto w-full py-1 sm:py-2 flex flex-col gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black">
-              Panel de Administración de turnos
-            </h1>
-            <p className="text-gray-700 text-sm">
-              Gestiona feriados y bloqueos de agenda para tus consultorios.
-            </p>
+          <div className="flex items-center gap-2 sm:gap-5">
+            <button
+              onClick={() => navigate("/COPAdmin")}
+              className="text-primary cursor-pointer"
+            >
+              <GoArrowLeft size={30} />
+            </button>
+            <div className="flex flex-col">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black">
+                Panel de Administración de turnos
+              </h1>
+              <p className="text-gray-700 text-sm">
+                Gestiona feriados y bloqueos de agenda para tus consultorios.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
@@ -106,7 +136,20 @@ const AdminTurnos = () => {
               <DayPicker
                 mode="single"
                 selected={fechaSeleccionada}
-                onSelect={setFechaSeleccionada}
+                onSelect={(e) => {
+                  setFechaSeleccionada(e);
+                  if (modo === "bloqueo") {
+                    setFormBloqueos((prev: propsFormBloqueos) => ({
+                      ...prev,
+                      fecha_turno_bloqueo: e?.toISOString().split("T")[0] ?? "",
+                    }));
+                  } else {
+                    setFormFeriados((prev: propsFormFeriados) => ({
+                      ...prev,
+                      feriado_fecha: e?.toISOString().split("T")[0] ?? "",
+                    }));
+                  }
+                }}
                 locale={es}
                 disabled={loading}
                 className="w-full text-sm"
@@ -141,9 +184,14 @@ const AdminTurnos = () => {
                       </label>
                       <select
                         disabled={loading}
-                        value={sede}
-                        onChange={(e) => setSede(Number(e.target.value))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        value={formBloqueos.fk_sede}
+                        onChange={(e) => {
+                          setFormBloqueos((prev: propsFormBloqueos) => ({
+                            ...prev,
+                            fk_sede: Number(e.target.value),
+                          }));
+                        }}
+                        className="w-full h-10 cursor-pointer bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                       >
                         {sedesConsul.map((sede: propsSedesPorConsultorio) => (
                           <option
@@ -162,13 +210,18 @@ const AdminTurnos = () => {
                       </label>
                       <select
                         disabled={loading}
-                        value={tipoDeBloqueo}
-                        onChange={(e) => setTipoDeBloqueo(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        value={formBloqueos.turno_bloq_tipo}
+                        onChange={(e) => {
+                          setFormBloqueos((prev: propsFormBloqueos) => ({
+                            ...prev,
+                            turno_bloq_tipo: Number(e.target.value),
+                          }));
+                        }}
+                        className="w-full h-10 cursor-pointer bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                       >
-                        <option value="T1">Todo el día</option>
-                        <option value="T2">Primer turno ( 9h - 13h)</option>
-                        <option value="T3">Segundo turno ( 14h - 18h )</option>
+                        <option value="1">Todo el día</option>
+                        <option value="2">Primer turno ( 9h - 13h )</option>
+                        <option value="3">Segundo turno ( 14h - 18h )</option>
                       </select>
                     </div>
 
@@ -223,9 +276,14 @@ const AdminTurnos = () => {
                       </label>
                       <input
                         disabled={loading}
-                        value={motivo}
-                        onChange={(e) => setMotivo(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        value={formBloqueos.turno_bloq_descripcion}
+                        onChange={(e) => {
+                          setFormBloqueos((prev: propsFormBloqueos) => ({
+                            ...prev,
+                            turno_bloq_descripcion: e.target.value,
+                          }));
+                        }}
+                        className="w-full bg-slate-50 border h-10 cursor-pointer border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         placeholder="Ej: Falta de técnicos"
                       />
                     </div>
@@ -233,27 +291,37 @@ const AdminTurnos = () => {
                 )}
 
                 {modo === "feriado" && (
-                  <div className="mt-3">
-                    <div className="flex flex-col gap-1">
-                      <label className="text-xs sm:text-sm font-bold">
-                        Descripción del feriado (opcional)
-                      </label>
-                      <input
-                        value={descripcionFeriado}
-                        onChange={(e) => setDescripcionFeriado(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                        placeholder="Ej: Feriado Nacional"
-                      />
-                    </div>
-                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer text-sm">
+                    <input
+                      type="checkbox"
+                      disabled={loading}
+                      checked={formFeriados.feriado_fijo === 1}
+                      onChange={(e) =>
+                        setFormFeriados((prev: propsFormFeriados) => ({
+                          ...prev,
+                          feriado_fijo: e.target.checked ? 1 : 0,
+                        }))
+                      }
+                      className="accent-primary"
+                    />
+                    Feriado fijo
+                  </label>
                 )}
 
                 <button
-                  disabled={true}
                   onClick={handleAgregar}
-                  className="flex-1 w-full mt-3 bg-primary cursor-pointer hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg shadow-md shadow-primary/20 transition-all text-sm"
+                  disabled={loading || loadingData}
+                  className={`flex-1 w-full mt-3 ${loading || loadingData ? "bg-primary/60" : "bg-primary"} cursor-pointer hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg shadow-md shadow-primary/20 transition-all text-sm`}
                 >
-                  {modo === "bloqueo" ? "Agregar bloqueo" : "Agregar feriado"}
+                  {loadingData ? (
+                    "Espere por favor..."
+                  ) : (
+                    <>
+                      {modo === "bloqueo"
+                        ? "Agregar bloqueo"
+                        : "Agregar feriado"}
+                    </>
+                  )}
                 </button>
               </div>
             </div>

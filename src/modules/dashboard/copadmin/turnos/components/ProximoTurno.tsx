@@ -5,6 +5,8 @@ import { RxUpdate } from "react-icons/rx";
 
 import { useReportesTurnos } from "../../../../../features/turnos/hooks/turnos/useReportesTurnos";
 import { Spinner } from "../../../../../app/components/Spinner";
+import { GoArrowLeft } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
 
 const ProximoTurno = () => {
   const { findDisponibilidadPorSede } = useReportesTurnos();
@@ -13,6 +15,7 @@ const ProximoTurno = () => {
   const [turno11, setTurno11] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [copiado, setCopiado] = useState(false);
+  const navigate = useNavigate();
 
   async function getProximosTurnos({
     sedes = [7],
@@ -79,11 +82,10 @@ Belgrano: ${turno11.fecha} - ${turno11.hora}`;
     <div className="bg-white mb-3 shadow-lg rounded-2xl p-4 flex flex-col gap-3">
       <div className="flex justify-between items-center">
         <button
-          onClick={getProximos}
-          disabled={loading}
-          className={`bg-white shadow-md ${loading ? "text-primary/60 border-primary/60" : "text-primary border-primary"}  border p-1 mb- rounded-lg hover:opacity-90 transition cursor-pointer flex items-center justify-center w-7 h-7`}
+          onClick={() => navigate("/COPAdmin")}
+          className="text-primary cursor-pointer"
         >
-          <RxUpdate size={16} />
+          <GoArrowLeft size={30} />
         </button>
 
         <div className="flex justify-center items-center gap-5 w-full">
@@ -95,29 +97,39 @@ Belgrano: ${turno11.fecha} - ${turno11.hora}`;
           </div>
         </div>
 
-        {turno7?.fecha && turno11?.fecha && (
+        <div className="flex justify-center items-center gap-2">
           <button
-            onClick={handleCopy}
+            onClick={getProximos}
             disabled={loading}
-            className="bg-white text-primary shadow-md border border-primary p-1 mb- rounded-lg hover:opacity-90 transition cursor-pointer flex items-center justify-center w-7 h-7"
+            className={`bg-white shadow-md ${loading ? "text-primary/60 border-primary/60" : "text-primary border-primary"}  border p-1 mb- rounded-lg hover:opacity-90 transition cursor-pointer flex items-center justify-center w-7 h-7`}
           >
-            <span className="relative flex items-center justify-center">
-              <LuCopy
-                className={`absolute transition-all duration-300 ${
-                  copiado ? "opacity-0 scale-75" : "opacity-100 scale-100"
-                }`}
-                size={16}
-              />
-
-              <LuCopyCheck
-                className={`absolute transition-all duration-300 text-green-500 ${
-                  copiado ? "opacity-100 scale-100" : "opacity-0 scale-75"
-                }`}
-                size={16}
-              />
-            </span>
+            <RxUpdate size={16} />
           </button>
-        )}
+
+          {turno7?.fecha && turno11?.fecha && (
+            <button
+              onClick={handleCopy}
+              disabled={loading}
+              className="bg-white text-primary shadow-md border border-primary p-1 mb- rounded-lg hover:opacity-90 transition cursor-pointer flex items-center justify-center w-7 h-7"
+            >
+              <span className="relative flex items-center justify-center">
+                <LuCopy
+                  className={`absolute transition-all duration-300 ${
+                    copiado ? "opacity-0 scale-75" : "opacity-100 scale-100"
+                  }`}
+                  size={16}
+                />
+
+                <LuCopyCheck
+                  className={`absolute transition-all duration-300 text-green-500 ${
+                    copiado ? "opacity-100 scale-100" : "opacity-0 scale-75"
+                  }`}
+                  size={16}
+                />
+              </span>
+            </button>
+          )}
+        </div>
       </div>
 
       {turno7?.fecha && turno11?.fecha && (

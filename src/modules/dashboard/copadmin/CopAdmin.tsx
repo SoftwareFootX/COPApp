@@ -27,55 +27,55 @@ const CopAdmin = () => {
       title: "Nuevo turno",
       route: "/COPAdmin",
       icon: <FaUserPlus size={iconSize} />,
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "Consultar turnos",
       route: "/COP3eros",
       icon: <FaClipboardList size={iconSize} />,
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "Recepción de paciente",
       route: "/TableroML",
       icon: <FaUserCheck size={iconSize} />,
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "Ordenes de trabajo",
       route: "/FootXSystem",
       icon: <FaFileMedical size={iconSize} />,
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "Ver ficha",
       route: "/FootXSystem",
       icon: <FaIdCard size={iconSize} />,
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "Caja",
       route: "/FootXSystem",
       icon: <FaCashRegister size={iconSize} />,
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "Recibir / Entregar OTs",
       route: "/FootXSystem",
       icon: <FaExchangeAlt size={iconSize} />,
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "Gift Cards",
       route: "/FootXSystem",
       icon: <FaGift size={iconSize} />,
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "Mensajes a 3eros",
       route: "/FootXSystem",
       icon: <MdMessage size={iconSize} />,
-      access: false,
+      access: user?.usu_app_footx_desarrollador === 1,
     },
     {
       title: "Admin Turnos",
@@ -93,7 +93,7 @@ const CopAdmin = () => {
 
   return (
     <Container>
-      <div className="grid flex-1 sm:grid-cols-3 grid-cols-2 auto-rows-fr gap-2 sm:gap-4 mt-4 sm:ml-4 ml-2">
+      <div className="grid flex-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 grid-cols-2 auto-rows-fr gap-2 sm:gap-4 mt-4 sm:ml-4 ml-2">
         {botones.map((item: any, index: number) => (
           <AccessButton
             key={index}

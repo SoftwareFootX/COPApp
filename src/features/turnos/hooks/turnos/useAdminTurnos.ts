@@ -1,14 +1,7 @@
 import { useRef, useState } from "react";
 
 import { formularioBloqueos, formulariosFeriados } from "../../utils/dataForms";
-import type {
-  propsFormFeriados,
-  propsFeriados,
-} from "../../../../core/entitites/propsFeriados.types";
-import type {
-  propsFormBloqueos,
-  propsBloqueos,
-} from "../../../../core/entitites/propsBloqueos.types";
+import { useAuthStore } from "../../../../app/store/useStore";
 import {
   actualizarBloqueo,
   actualizarFeriado,
@@ -18,8 +11,16 @@ import {
   agregarFeriado,
   getBloqueos,
   getFeriados,
+  bloquearEspacio,
 } from "../../../../infrastructure/api/turnos/adminTurnos";
-import { useAuthStore } from "../../../../app/store/useStore";
+import type {
+  propsFormFeriados,
+  propsFeriados,
+} from "../../../../core/entitites/propsFeriados.types";
+import type {
+  propsFormBloqueos,
+  propsBloqueos,
+} from "../../../../core/entitites/propsBloqueos.types";
 
 const useAdminTurnos = () => {
   const [bloqueosData, setBloqueosData] = useState<propsBloqueos[]>([]);
@@ -31,14 +32,15 @@ const useAdminTurnos = () => {
   const [formFeriados, setFormFeriados] =
     useState<propsFormFeriados>(formulariosFeriados);
   const [loading, setLoading] = useState(false);
-  const [pagina, setPagina] = useState(1);
+  const [pagina, setPagina] = useState(0);
   const { user } = useAuthStore();
 
   const turnosBloqueados = async (offset: number) => {
     try {
       setLoading(true);
+
       const response = await getBloqueos({
-        limit: 8,
+        limit: 50,
         offset,
       });
 
@@ -59,13 +61,27 @@ const useAdminTurnos = () => {
   };
 
   const agregarBloqueoTurno = async () => {
+    if (!formBloqueos.fecha_turno_bloqueo) {
+      alert("La fecha es obligatoria");
+      return;
+    }
+
+    if (!user?.idtusuarios) {
+      console.error("Usuario no válido");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      setLoading(true);
-      const { idtturnos_bloqueados, ...bodyFinal } = formBloqueos;
+      const { idtturnos_bloqueados, ...body } = formBloqueos;
 
-      const response = await agregarBloqueo(bodyFinal);
+      const response = await agregarBloqueo({
+        ...body,
+        fk_usuarios: user.idtusuarios,
+      });
 
-      console.log("Nuevo ID: ", response);
+      return response.data;
     } catch (error) {
       console.error("Error al agregar bloqueo", error);
       throw error;
@@ -83,7 +99,7 @@ const useAdminTurnos = () => {
 
       if (response.status === 200) {
         alert("Bloqueo actualizado correctamente");
-        await turnosBloqueados(pagina);
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error al editar bloqueo", error);
@@ -102,9 +118,8 @@ const useAdminTurnos = () => {
         fk_usuarios: user?.idtusuarios,
       };
 
-      const response = await eliminarBloqueo(bodyFinal);
-
-      console.log("Bloqueo eliminado: ", response);
+      await eliminarBloqueo(bodyFinal);
+      window.location.reload();
     } catch (error) {
       console.error("Error al eliminar bloqueo", error);
       throw error;
@@ -116,14 +131,14 @@ const useAdminTurnos = () => {
   const feriados = async (offset: number) => {
     try {
       setLoading(true);
-      const response = await getFeriados({
-        limit: 20,
+      const { data } = await getFeriados({
+        limit: 40,
         offset,
       });
 
-      setFeriadosData(response.data.data);
+      setFeriadosData(data.data);
 
-      setTotalPaginas(response.data.totalPages);
+      setTotalPaginas(data.totalPages);
 
       containerRef.current?.scrollTo({
         top: -1000,
@@ -138,17 +153,25 @@ const useAdminTurnos = () => {
   };
 
   const agregarFeriadoTurno = async () => {
+    if (!user?.idtusuarios) return;
+
+    setLoading(true);
+
     try {
-      setLoading(true);
-      const { idtferiados_turnos, ...bodyFinal } = formFeriados;
+      const { idtferiados_turnos, ...body } = formFeriados;
 
-      // return console.log("Form: ", bodyFinal);
-      const response = await agregarFeriado(bodyFinal);
+      const bodyInsert = {
+        ...body,
+        fk_usuarios: user.idtusuarios,
+      };
 
-      console.log("Nuevo ID: ", response);
+      await agregarFeriado(bodyInsert);
+
+      window.location.reload();
     } catch (error) {
       console.error("Error al agregar feriado", error);
-      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -156,12 +179,14 @@ const useAdminTurnos = () => {
     try {
       setLoading(true);
 
-      const response = await actualizarFeriado(formFeriados);
+      await actualizarFeriado(formFeriados);
 
-      console.log("Feriado editado: ", response);
+      window.location.reload();
     } catch (error) {
       console.error("Error al editar feriado", error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -173,16 +198,49 @@ const useAdminTurnos = () => {
         idtferiados_turnos: idtferiados_turnos,
         fk_usuarios: user?.idtusuarios,
       };
-      const response = await eliminarFeriado(bodyFinal);
 
-      console.log("Feriado eliminado: ", response);
+      await eliminarFeriado(bodyFinal);
+      window.location.reload();
     } catch (error) {
       console.error("Error al eliminar feriado", error);
       throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const bloquearEspaciosDeTrabajo = async (espacios: number[]) => {
+    try {
+      if (!espacios.length) {
+        alert("Debe seleccionar al menos un consultorio");
+        return;
+      }
+
+      setLoading(true);
+
+      const crearBloqueo = await agregarBloqueoTurno();
+
+      if (!crearBloqueo?.insertId) return;
+
+      await Promise.all(
+        espacios.map((espacio) =>
+          bloquearEspacio({
+            fk_espacios_de_trabajo: espacio,
+            fk_turnos_bloq: crearBloqueo.insertId,
+          }),
+        ),
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al bloquear espacios de trabajo", error);
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   return {
+    bloquearEspaciosDeTrabajo,
     eliminarBloqueoTurno,
     eliminarFeriadoTurno,
     agregarBloqueoTurno,

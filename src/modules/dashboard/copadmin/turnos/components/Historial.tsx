@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAdminTurnos } from "../../../../../features/turnos/hooks/turnos/useAdminTurnos";
-import { Pagination } from "../../../../../app/components/Paginacion";
+// import { Pagination } from "../../../../../app/components/Paginacion";
 import { FiEdit, FiTrash2, FiCheck, FiX } from "react-icons/fi";
 import { useAuthStore } from "../../../../../app/store/useStore";
 
-const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
+const Historial = ({ modo }: { modo: string }) => {
   const { user } = useAuthStore();
   const {
     bloqueosData,
     feriadosData,
-    totalPaginas,
+    // totalPaginas,
     containerRef,
     formFeriados,
     formBloqueos,
@@ -23,7 +23,7 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
     setFormBloqueos,
     setFormFeriados,
     turnosBloqueados,
-    setPagina,
+    // setPagina,
     feriados,
   } = useAdminTurnos();
 
@@ -87,11 +87,10 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
   return (
     <div
       ref={containerRef}
-      className="w-full h-full py-5 overflow-y-auto min-h-100 px-2"
+      className="w-full h-full py-5 overflow-y-auto min-h-80 max-h-120 px-2"
     >
       <div className="shadow-xl rounded-2xl overflow-x-auto w-full">
         <div className="min-w-215">
-          {/* HEADER */}
           {modo === "bloqueo" ? (
             <div className="grid grid-cols-12 gap-4 px-4 py-3 text-xs font-medium text-white uppercase border-b bg-primary">
               <div className="col-span-2 text-center">Sede</div>
@@ -110,19 +109,16 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
           )}
 
           <div className="divide-y">
-            {/* BLOQUEOS */}
             {modo === "bloqueo" &&
               bloqueosAgrupados?.map((item: any) => (
                 <div
                   key={item.idtturnos_bloqueados}
-                  className="grid grid-cols-12 gap-4 px-4 py-4 items-center odd:bg-gray-100 hover:bg-gray-100 transition"
+                  className="grid grid-cols-12 gap-4 px-4 py-4 items-center odd:bg-white hover:bg-gray-100 transition"
                 >
-                  {/* SEDE */}
                   <div className="col-span-2 text-sm text-center">
                     {item.fk_cede === 7 ? "Villa Luro" : "Belgrano"}
                   </div>
 
-                  {/* FECHA */}
                   <div className="col-span-2 text-sm text-center">
                     {editId === item.idtturnos_bloqueados ? (
                       <input
@@ -134,7 +130,7 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
                             fecha_turno_bloqueo: e.target.value,
                           })
                         }
-                        className="border rounded px-2 py-1"
+                        className="border rounded px-2 py-1 h-10 cursor-pointer"
                       />
                     ) : (
                       new Date(item.turno_bloq_fecha).toLocaleDateString()
@@ -152,7 +148,7 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
                             turno_bloq_tipo: Number(e.target.value),
                           })
                         }
-                        className="border rounded px-2 py-1"
+                        className="border rounded px-2 py-1 h-10 cursor-pointer"
                       >
                         <option value={1}>Todo el día</option>
                         <option value={2}>9h - 13h</option>
@@ -163,12 +159,10 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
                     )}
                   </div>
 
-                  {/* CONSULTORIOS */}
                   <div className="col-span-2 text-sm text-center">
                     {item.consultoriosDescripcion}
                   </div>
 
-                  {/* DESCRIPCIÓN */}
                   <div className="col-span-3 text-sm text-center">
                     {editId === item.idtturnos_bloqueados ? (
                       <input
@@ -180,7 +174,7 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
                             turno_bloq_descripcion: e.target.value,
                           })
                         }
-                        className="border rounded px-2 py-1 w-full"
+                        className="border rounded px-2 py-1 w-full h-10 cursor-pointer"
                       />
                     ) : (
                       item.turno_bloq_descripcion || "---"
@@ -236,14 +230,12 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
                 </div>
               ))}
 
-            {/* FERIADOS */}
             {modo === "feriado" &&
               feriadosData?.map((item) => (
                 <div
                   key={item.idtferiados_turnos}
-                  className="grid grid-cols-3 gap-4 px-4 py-4 items-center odd:bg-gray-100 hover:bg-gray-100 transition"
+                  className="grid grid-cols-3 gap-4 px-4 py-4 items-center odd:bg-white hover:bg-gray-100 transition"
                 >
-                  {/* FECHA */}
                   <div className="text-center text-sm">
                     {editId === item.idtferiados_turnos ? (
                       <input
@@ -255,14 +247,13 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
                             feriado_fecha: e.target.value,
                           })
                         }
-                        className="border rounded px-2 py-1"
+                        className="border rounded px-2 py-1 h-10 cursor-pointer"
                       />
                     ) : (
                       new Date(item.feriado_fecha).toLocaleDateString()
                     )}
                   </div>
 
-                  {/* FIJO */}
                   <div className="text-center text-sm">
                     {editId === item.idtferiados_turnos ? (
                       <select
@@ -273,7 +264,7 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
                             feriado_fijo: Number(e.target.value),
                           })
                         }
-                        className="border rounded px-2 py-1"
+                        className="border rounded px-2 py-1 h-10 cursor-pointer"
                       >
                         <option value={1}>Sí</option>
                         <option value={0}>No</option>
@@ -285,7 +276,6 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
                     )}
                   </div>
 
-                  {/* ACCIONES */}
                   <div className="flex justify-center gap-2">
                     {editId === item.idtferiados_turnos ? (
                       <>
@@ -312,7 +302,7 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
                             setFormFeriados({
                               ...formFeriados,
                               idtferiados_turnos: item.idtferiados_turnos,
-                              feriado_fecha: item.feriado_fecha,
+                              feriado_fecha: item.feriado_fecha.split("T")[0],
                               feriado_fijo: item.feriado_fijo.data[0],
                             });
                           }}
@@ -341,13 +331,15 @@ const Historial = ({ modo }: { modo: "feriado" | "bloqueo" }) => {
         </div>
       </div>
 
-      {bloqueosData.length !== 0 && !loading && (
+      {/* {bloqueosData.length !== 0 && !loading && (
         <Pagination
           currentPage={pagina}
           totalPages={totalPaginas}
-          onPageChange={(page) => setPagina(page)}
+          onPageChange={async (page) => {
+            setPagina(page);
+          }}
         />
-      )}
+      )} */}
     </div>
   );
 };

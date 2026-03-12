@@ -42,6 +42,23 @@ const Login = () => {
             usu_celular: user.usu_celular,
             usu_app_footx_administrador:
               user.usu_app_footx_administrador.data[0],
+            usu_es_administrador: user.usu_es_administrador.data[0],
+            usu_acceso_a_footx16: user.usu_acceso_a_footx16.data[0],
+            usu_acceso_a_app_footx: user.usu_acceso_a_app_footx.data[0],
+            usu_es_super_admin: user.usu_es_super_admin.data[0],
+            usu_es_tercero_cop: user.usu_es_tercero_cop.data[0],
+            usu_app_footx_visitador: user.usu_app_footx_visitador.data[0],
+            usu_app_footx_desarrollador:
+              user.usu_app_footx_desarrollador.data[0],
+            usu_app_footx_crud_completo:
+              user.usu_app_footx_crud_completo.data[0],
+            usu_permite_redisenios: user.usu_permite_redisenios.data[0],
+            usu_acceso_a_reportes_cop: user.usu_acceso_a_reportes_cop.data[0],
+            usu_puede_actualizar_fx16: user.usu_puede_actualizar_fx16.data[0],
+            usu_permiso_imagenes_fxapp: user.usu_permiso_imagenes_fxapp.data[0],
+            usu_kinnx_usa_stabilar: user.usu_kinnx_usa_stabilar.data[0],
+            usu_acceso_kinnx_liveapp: user.usu_acceso_kinnx_liveapp.data[0],
+            usu_acceso_a_tablero_ml: user.usu_acceso_a_tablero_ml.data[0],
           };
           navigate("/");
           setAuth(userData, token);
@@ -75,7 +92,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-primary/20 via-white to-primary/10 px-4 py-10">
-      {/* CONTENEDOR GLASS */}
       <div className="relative w-full max-w-md">
         <div className="absolute inset-0 bg-white/25 backdrop-blur-2xl rounded-3xl shadow-xl border border-white/30" />
         <div className="relative z-10 py-2 px-4 rounded-3xl text-gray-800 bg-primary/15">
@@ -88,7 +104,6 @@ const Login = () => {
               login();
             }}
           >
-            {/* Nombre de usuario */}
             <div>
               <label className="block mb-2 text-primary font-medium">
                 Nombre de usuario
@@ -99,11 +114,10 @@ const Login = () => {
                 onChange={(e) =>
                   setForm((prev) => ({ ...prev, usu_username: e.target.value }))
                 }
-                className="w-full border border-white/50 bg-white/40 backdrop-blur-sm py-2 px-4 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition"
+                className="w-full border h-10 cursor-pointer border-white/50 bg-white/40 backdrop-blur-sm py-2 px-4 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/60 focus:border-primary transition"
               />
             </div>
 
-            {/* Contraseña */}
             <div>
               <label className="block mb-2 text-primary font-medium">
                 Contraseña
@@ -118,7 +132,7 @@ const Login = () => {
                       usu_password: e.target.value,
                     }))
                   }
-                  className="w-full bg-transparent py-2 text-gray-700 focus:outline-none"
+                  className="w-full h-10 cursor-pointer bg-transparent py-2 text-gray-700 focus:outline-none"
                 />
                 <button
                   type="button"
@@ -133,14 +147,12 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Error */}
             {messageError !== "" && (
               <div className="text-red-500 text-sm text-center bg-red-50/60 py-2 rounded-full">
                 {messageError}
               </div>
             )}
 
-            {/* Botón */}
             <div className="w-full flex justify-center">
               <button
                 type="submit"
@@ -152,7 +164,6 @@ const Login = () => {
             </div>
           </form>
 
-          {/* Soporte */}
           <a
             target="_blank"
             href="https://wa.me/+5493434529527"
