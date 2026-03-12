@@ -13,7 +13,7 @@ const formulariosFeriados = {
   idtferiados_turnos: 1,
   fk_usuarios: 1,
   feriado_fecha: "",
-  feriado_fijo: 1,
+  feriado_fijo: 0,
 };
 
 export { formularioBloqueos, formulariosFeriados };

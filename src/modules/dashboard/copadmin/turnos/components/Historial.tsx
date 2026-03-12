@@ -85,10 +85,7 @@ const Historial = ({ modo }: { modo: string }) => {
     .filter((item: any) => item.is_deleted === 0);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full h-full py-5 overflow-y-auto min-h-80 max-h-120 px-2"
-    >
+    <div ref={containerRef} className="w-full h-full py-5 min-h-80 px-2">
       <div className="shadow-xl rounded-2xl overflow-x-auto w-full">
         <div className="min-w-215">
           {modo === "bloqueo" ? (
